@@ -1,0 +1,2 @@
+2020/09/29 17:26:37 [error] 28#28: *1 open() "/etc/nginx/html/favicon.ico" failed (2: No such file or directory), client: 172.28.0.1, server: localhost:3000, request: "GET /favicon.ico HTTP/1.1", host: "localhost:8080", referrer: "http://localhost:8080/static"
+2020/09/29 17:30:19 [error] 28#28: *4 "/etc/nginx/html/index.html" is not found (2: No such file or directory), client: 172.28.0.1, server: localhost:3000, request: "GET / HTTP/1.1", host: "localhost:8080"
