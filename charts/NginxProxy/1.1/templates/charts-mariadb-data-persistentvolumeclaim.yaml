@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: charts-wordpress-data
-  name: charts-wordpress-data
+    io.kompose.service: charts-mariadb-data
+  name: {{ .Release.Name }}charts-mariadb-data
 spec:
   accessModes:
   - ReadWriteOnce

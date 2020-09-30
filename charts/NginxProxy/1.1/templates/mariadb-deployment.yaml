@@ -6,13 +6,13 @@ metadata:
     kompose.version: 1.21.0 (992df58d8)
   creationTimestamp: null
   labels:
-    io.kompose.service: nginx
-  name: nginx
+    io.kompose.service: mariadb
+  name: {{ .Release.Name }}mariadb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: nginx
+      io.kompose.service: mariadb
   strategy:
     type: Recreate
   template:
@@ -22,28 +22,27 @@ spec:
         kompose.version: 1.21.0 (992df58d8)
       creationTimestamp: null
       labels:
-        io.kompose.service: nginx
+        io.kompose.service: mariadb
     spec:
       containers:
-      - image: nginx:latest
+      - env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: yes
+        - name: MARIADB_DATABASE
+          value: bitnami_wordpress
+        - name: MARIADB_USER
+          value: bn_wordpress
+        image: docker.io/bitnami/mariadb:10.3-debian-10
         imagePullPolicy: ""
-        name: nginx
-        ports:
-        - containerPort: 80
-        - containerPort: 443
+        name: mariadb
         resources: {}
         volumeMounts:
-        - mountPath: /etc/nginx/nginx.conf
-          name: nginx-claim0
-        - mountPath: /etc/nginx/error_log.log
-          name: nginx-claim1
+        - mountPath: /bitnami/mariadb
+          name: charts-mariadb-data
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
-      - name: nginx-claim0
+      - name: charts-mariadb-data
         persistentVolumeClaim:
-          claimName: nginx-claim0
-      - name: nginx-claim1
-        persistentVolumeClaim:
-          claimName: nginx-claim1
+          claimName: charts-mariadb-data
 status: {}
