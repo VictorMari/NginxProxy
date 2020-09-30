@@ -1,31 +1,41 @@
 version: '2'
 services:
-  nginxBackend:
-    image: 'nginx:latest'
-    container_name: 'back-end'
-    expose:
-      - '80'
+  mariadb:
+    image: 'docker.io/bitnami/mariadb:10.3-debian-10'
     volumes:
-      - ./nginx-backend.conf:/etc/nginx/nginx.conf
-      - ./backendError.log:/etc/nginx/error_log.log
+      - 'mariadb_data:/bitnami/mariadb'
+    environment:
+      - MARIADB_USER=bn_wordpress
+      - MARIADB_DATABASE=bitnami_wordpress
+      - ALLOW_EMPTY_PASSWORD=yes
+  wordpress:
+    image: 'docker.io/bitnami/wordpress:5-debian-10'
+    expose:
+      - '8080'
+      - '4000'
+    volumes:
+      - 'wordpress_data:/bitnami/wordpress'
+    depends_on:
+      - mariadb
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT_NUMBER=3306
+      - WORDPRESS_DATABASE_USER=bn_wordpress
+      - WORDPRESS_DATABASE_NAME=bitnami_wordpress
+      - ALLOW_EMPTY_PASSWORD=yes
   nginx:
     image: 'nginx:latest'
-    container_name: 'Proxy-server'
+    container_name: 'Nginx'
+    depends_on:
+      - wordpress
     ports:
       - '3000:80'
       - '4000:443'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - './nginxError.log:/etc/nginx/error_log.log'
+      - './nginxError.log:/etc/nginx/error_log.log'  
 volumes:
   mariadb_data:
     driver: local
   wordpress_data:
     driver: local
-networks:
-  frontend:
-    driver: bridge
-    ipam: 
-      config:
-        - subnet: 10.5.0.0/16
-          gateway: 10.5.0.1 
